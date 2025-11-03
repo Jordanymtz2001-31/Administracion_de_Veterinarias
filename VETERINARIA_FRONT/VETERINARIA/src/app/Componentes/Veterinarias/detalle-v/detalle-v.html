@@ -1,0 +1,178 @@
+<main id="detalle-tienda-section" class="detalle-tienda-main">
+    <div class="detalle-tienda-container">
+        <div class="detalle-header">
+            <h2>BÚSQUEDA DETALLADA DE VETERINARIA</h2>
+        </div>
+        <!-- BUSCADOR -->
+        @if (mostrarBuscador) {
+            <div class="buscador-container">
+                @if (loading) {
+                    <div class="loading-indicator">
+                        <p>Cargando veterinarias...</p>
+                    </div>
+                }@else {
+                    <div class="buscador-card">
+                        <h3>🔍 Buscar Veterinaria</h3>
+                        <p>Escribe el nombre de la veterinaria que deseas consultar:</p>
+                        
+                        <div class="input-group">
+                            <div class="search-container">
+                                <input 
+                                    type="text" 
+                                    [(ngModel)]="nombreBusqueda" 
+                                    placeholder="Ejemplo: Veterinaria..."
+                                    class="search-input"
+                                    (input)="filtrarVeterinarias()"
+                                    (keyup.enter)="buscarPorNombre()">
+                                <!-- Sugerencias -->
+                                @if (mostrarSugerencias) {
+                                    <div class="sugerencias-dropdown">
+                                        @for (vet of veterinariasFiltradas; track vet.id_veterinaria) {
+                                            <div class="sugerencia-item" (click)="seleccionarVeterinaria(vet)">
+                                                <div class="sugerencia-nombre">{{vet.nombre}}</div>
+                                                <div class="sugerencia-info">{{vet.direccion}} - {{vet.telefono}}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <button (click)="buscarPorNombre()" class="btn-buscar">
+                                🔍 Buscar
+                            </button>
+                        </div>
+
+                        @if (veterinariaSeleccionada) {
+                            <div class="veterinaria-seleccionada">
+                                <h4>✅ Veterinaria seleccionada:</h4>
+                                <div class="info-seleccionada">
+                                    <strong>{{veterinariaSeleccionada.nombre}}</strong><br>
+                                    {{veterinariaSeleccionada.direccion}} | {{veterinariaSeleccionada.telefono}}
+                                </div>
+                            </div>
+                        }
+
+                        @if (error) {
+                            <div class="error-message">
+                                <p>{{error}}</p>
+                            </div>
+                        }
+
+                        <div class="ayuda-text">
+                            <p><strong>💡 Consejo:</strong> Escribe el nombre y selecciona de las sugerencias que aparecen</p>
+                        </div>
+                    </div>
+
+                    <div class="acciones-container">
+                        <button class="btn-inicio" (click)="volerInicio()">
+                            ← Volver al Menú Principal
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- DETALLES -->
+        @if (!mostrarBuscador) {
+            @if (loading) {
+                <div class="loading-indicator">
+                    <p>Cargando detalles de la veterinaria...</p>
+                </div>
+            }@else if (error) {
+                <div class="error-message">
+                    <p class="error-message"> {{error}} </p>
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        <i class="bi bi-arrow-left"></i>Volver al Buscador
+                    </button>
+                </div>
+            }@else {
+            <div class="tienda-info-card">
+                <div class="tienda-header">
+                    <h3> {{detalleVeterinaria.veterinaria.nombre}} </h3>
+                    <span class="tienda_id">ID: {{detalleVeterinaria.veterinaria.id_veterinaria}}</span>
+                </div>
+                <div class="tienda_details">
+                    <div class="detail-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span><strong>Direccion:</strong>{{detalleVeterinaria.veterinaria.direccion}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-building"></i>
+                        <span><strong>Telefono:</strong> {{detalleVeterinaria.veterinaria.telefono}}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Seccion de Responsables-->
+            <div class="seccion-card">
+                <div class="section-header">
+                    <i class="bi bi-person-badge"></i>
+                    <h3>Responsables de la Veterinaria</h3>
+                    <span class="badge">{{esArray(detalleVeterinaria.responsables) ? detalleVeterinaria.responsables.length : 0}}</span>
+                </div>
+                @if (!esArray(detalleVeterinaria.responsables)) {
+                    <p class="no-data-message">{{detalleVeterinaria.responsables}} </p>
+                }@else if (detalleVeterinaria.responsables.length === 0) {
+                    <p class="no-data-message"> No hay responsables registrados en la veterinaria</p>
+                }@else{
+                    <div class="items-grid">
+                        @for (responsable of detalleVeterinaria.responsables; track responsable.id_responsable) {
+                            <div class="item-card">
+                                <div class="item-header">
+                                    <h4> {{responsable.nombre}} </h4>
+                                    <span class="edad">ID: {{responsable.id_responsable}}</span>
+                                </div>
+                                <div class="item-details">
+                                    <p><strong>Contacto:</strong> {{responsable.contacto}}</p>
+                                    <p><strong>ID Veterinaria:</strong> {{responsable.id_veterinaria}}</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <!-- Seccion de mascotas-->
+            <div class="seccion-card">
+                <div class="section-header">
+                    <i class="bi bi-heart"></i>
+                    <h3>Mascotas de esta Veterinaria</h3>
+                    <span class="badge">{{esArray(detalleVeterinaria.mascotas) ? detalleVeterinaria.mascotas.length : 0}}</span>
+                </div>
+                @if (!esArray(detalleVeterinaria.mascotas)) {
+                    <p class="no-data-message">{{detalleVeterinaria.mascotas}} </p>
+                }@else if (detalleVeterinaria.mascotas.length === 0) {
+                    <p class="no-data-message"> No hay mascotas registradas en la veterinaria</p>
+                }@else{
+                    <div class="items-grid">
+                        @for (mascota of detalleVeterinaria.mascotas; track mascota.id_mascota) {
+                            <div class="item-card">
+                                <div class="item-header">
+                                    <h4> {{mascota.nombre}} </h4>
+                                    <span class="edad">ID: {{mascota.id_mascota}}</span>
+                                </div>
+                                <div class="item-details">
+                                    <p><strong>Raza:</strong> {{mascota.raza}}</p>
+                                    <p><strong>Edad:</strong> {{mascota.edad}} años</p>
+                                    <p><strong>Razón de cita:</strong> {{mascota.razon_cita}}</p>
+                                    <p><strong>Cliente:</strong> ID {{mascota.id_cliente}}</p>
+                                    <p><strong>Responsable:</strong> ID {{mascota.id_responsable}}</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+                <div class="acciones-container">
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        🔍 Nueva Búsqueda
+                    </button>
+                    <button class="btn volver" (click)="volverAlistar()">
+                        <i class="bi bi-arrow-left"></i>Volver a Lista
+                    </button>
+                    <button class="btn-inicio" (click)="volerInicio()">
+                        <i class="bi bi-house"></i>Ir al inicio
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</main>
+

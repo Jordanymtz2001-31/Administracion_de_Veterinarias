@@ -1,0 +1,100 @@
+<main id="guardar-cliente-section" class="guardar-cliente-main" >
+    <div class="guardar-cliente-container">
+        <div class="guardar-cliente-header">
+            <h1>NUEVA MASCOTA</h1>
+        </div>
+        <form class="cliente-form" (ngSubmit)="guardarMascota()">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" name="nombre"  [(ngModel)]="mascota.nombre" required placeholder="Ingresa el nombre de las mascota">
+            </div>
+            <div class="form-group">
+                <label for="raza">Raza</label>
+                <input type="text" name="raza"  [(ngModel)]="mascota.raza" required placeholder="Ingresa la raza de la mascota">
+            </div>
+            <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" name="edad"  [(ngModel)]="mascota.edad" required placeholder="Ingresa la edad de la mascota">
+            </div>
+            <div class="form-group">
+                <label for="cita">Razon por la cita</label>
+                <input type="text" name="cita"  [(ngModel)]="mascota.razon_cita" required placeholder="Ingresa la razon por la cita">
+            </div>
+            <div class="form-group">
+                <label for="id_cliente">Dueño *</label>
+                @if (cargandoDatos) {
+                    <p class="loading-text">Cargando clientes...</p>
+                } @else {
+                    <select name="id_cliente" [(ngModel)]="mascota.id_cliente" required class="form-select">
+                        <option value="0">-- Selecciona un cliente --</option>
+                        @for (cliente of clientes; track cliente.id_cliente) {
+                            <option [value]="cliente.id_cliente">
+                                {{cliente.nombre}} - {{cliente.contacto}}
+                            </option>
+                        }
+                    </select>
+                    @if (clientes.length === 0) {
+                        <p class="warning-text">⚠️ No hay clientes registrados. <a href="/guardar-cliente">Crear cliente</a></p>
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <label for="id_responsable">Responsable *</label>
+                @if (cargandoDatos) {
+                    <p class="loading-text">Cargando responsables...</p>
+                } @else {
+                    <select name="id_responsable" [(ngModel)]="mascota.id_responsable" required class="form-select">
+                        <option value="0">-- Selecciona un responsable --</option>
+                        @for (responsable of responsables; track responsable.id_responsable) {
+                            <option [value]="responsable.id_responsable">
+                                {{responsable.nombre}} - {{responsable.contacto}}
+                            </option>
+                        }
+                    </select>
+                    @if (responsables.length === 0) {
+                        <p class="warning-text">⚠️ No hay responsables registrados. <a href="/guardar-responsable">Crear responsable</a></p>
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <label for="id_veterinaria">Veterinaria *</label>
+                @if (cargandoDatos) {
+                    <p class="loading-text">Cargando veterinarias...</p>
+                } @else {
+                    <select name="id_veterinaria" [(ngModel)]="mascota.id_veterinaria" required class="form-select">
+                        <option value="0">-- Selecciona una veterinaria --</option>
+                        @for (veterinaria of veterinarias; track veterinaria.id_veterinaria) {
+                            <option [value]="veterinaria.id_veterinaria">
+                                {{veterinaria.nombre}} - {{veterinaria.telefono}}
+                            </option>
+                        }
+                    </select>
+                    @if (veterinarias.length === 0) {
+                        <p class="warning-text">⚠️ No hay veterinarias registradas. <a href="/guardar-veterinaria">Crear veterinaria</a></p>
+                    }
+                }
+            </div>
+            @if (loading){
+                <p class="loading">Guardando cliente....</p>
+            }
+            @if (mensaje){
+                <p class="mensaje" [class.error]="esError"> {{mensaje}} </p>
+            }
+
+            <div class="botones-container">
+                <button class="btn-guardar" type="submit" [disabled]="loading">
+                    <i class="bi bi-check-lg"></i>Guardar Mascota
+                </button>
+                <button class="btn-cancelar" type="button" (click)="cancelar()" [disabled]="loading">
+                    <i class="bi bi-x-lg"></i>Cancelar
+                </button>
+            </div>
+            <div class="volver-container">
+                <button class="btn-volver" (click)="volverInicio()" >
+                    <i class="bi bi-arrow-left"></i> Volver
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+

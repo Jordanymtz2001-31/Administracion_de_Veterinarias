@@ -1,0 +1,57 @@
+<main id="guardar-cliente-section" class="guardar-cliente-main" >
+    <div class="guardar-cliente-container">
+        <div class="guardar-cliente-header">
+            <h1>NUEVO ENCARGADO</h1>
+        </div>
+        <form class="cliente-form" (ngSubmit)="guardarResponsable()">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" name="nombre"  [(ngModel)]="responsable.nombre" required placeholder="Ingresa el nombre del encargado">
+            </div>
+            <div class="form-group">
+                <label for="contacto">Contacto</label>
+                <input type="text" name="contacto"  [(ngModel)]="responsable.contacto" required placeholder="Ingresa el contacto del encargado">
+            </div>
+            <div class="form-group">
+                <label for="id_veterinaria">Veterinaria *</label>
+                @if (cargandoDatos) {
+                    <p class="loading-text">Cargando veterinarias...</p>
+                } @else {
+                    <select name="id_veterinaria" [(ngModel)]="responsable.id_veterinaria" required class="form-select">
+                        <option value="0">-- Selecciona una veterinaria --</option>
+                        @for (veterinaria of veterinarias; track veterinaria.id_veterinaria) {
+                            <option [value]="veterinaria.id_veterinaria">
+                                {{veterinaria.nombre}} - {{veterinaria.telefono}}
+                            </option>
+                        }
+                    </select>
+                    @if (veterinarias.length === 0) {
+                        <p class="warning-text">⚠️ No hay veterinarias registradas. <a href="/guardar-veterinaria">Crear veterinaria</a></p>
+                    }
+                }
+            </div>
+            @if (loading){
+                <p class="loading">Guardando encargado....</p>
+            }
+            @if (mensaje){
+                <p class="mensaje" [class.error]="esError"> {{mensaje}} </p>
+            }
+
+            <div class="botones-container">
+                <button class="btn-guardar" type="submit" [disabled]="loading">
+                    <i class="bi bi-check-lg"></i>Guardar Cliente
+                </button>
+                <button class="btn-cancelar" type="button" (click)="cancelar()" [disabled]="loading">
+                    <i class="bi bi-x-lg"></i>Cancelar
+                </button>
+            </div>
+            <div class="volver-container">
+                <button class="btn-volver" (click)="volverInicio()" >
+                    <i class="bi bi-arrow-left"></i> Volver
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+

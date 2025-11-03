@@ -1,0 +1,46 @@
+<div id="clientes-section" class="clientes-main">
+    <div class="clientes-container">
+        <div class="clientes-header">
+            <h1>VETERINARIAS</h1>
+        </div>
+        @if(loading){
+            <p class="loading">Cargando Veterinarias...</p>
+        }@else{
+            @if(veterinarias.length === 0){
+                <p class="no-clientes">No hay veterinarias registrados.</p>
+            }@else{
+                <table class="clientes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Direccion</th>
+                            <th>Telefono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(veterinaria of veterinarias; track veterinaria.id_veterinaria){
+                            <tr class="text-center">
+                                <td>{{veterinaria.id_veterinaria}}</td>
+                                <td>{{veterinaria.nombre}}</td>
+                                <td>{{veterinaria.direccion}}</td>
+                                <td>{{veterinaria.telefono}}</td>
+                                <td>
+                                    <button class="btn delete" (click)="eliminarVeterinaria(veterinaria.id_veterinaria)" ><i class="bi bi-trasnh3"></i>Eliminar</button>
+                                    <button class="btn edit" (click)="editarVeterinaria(veterinaria.id_veterinaria)"><i class="bi bi-pencil-square"></i>Editar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        <div class="volver-container">
+            <button class="btn-volver" (click)="volverInicio()"><i class="bi bi-arrow-up"></i></button>
+        </div>
+    </div>
+</div>
+
+
+
