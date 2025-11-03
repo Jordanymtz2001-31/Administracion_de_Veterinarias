@@ -1,0 +1,9 @@
+services:
+  responsables-app:
+    build: . #Ubicacion de dockerfile
+    container_name: responsables_app
+    ports:
+      - "8003:8003" #Puerto PC: Puerto del contenedor
+    volumes:
+      - .:/app
+    restart: always #Reinicia el contenedor si falla

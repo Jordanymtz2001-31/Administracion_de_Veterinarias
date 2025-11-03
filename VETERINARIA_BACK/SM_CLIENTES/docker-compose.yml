@@ -1,0 +1,46 @@
+#Primer Contenedor
+
+services:  #Nombre del contenedor
+  clientes_db:
+    image: mysql:8.0
+    container_name: clientes_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: clientes_db #Nombre de la base de datos
+      MYSQL_USER: Dany
+      MYSQL_PASSWORD: 12345678j
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_cliente_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-Dany", "-p12345678j"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+#Segundo Contenedor
+  clientes_app: #Nombre del contenedor
+    build: .
+    container_name: clientes_app #Nombre del contenedor
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      clientes_db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=clientes_db
+      - DB_PORT=3306
+      - DB_NAME=clientes_db
+      - DB_USER=Dany
+      - DB_PASSWORD=12345678j
+      - DJANGO_SETTINGS_MODULE=CLIENTES.settings
+
+volumes:
+  mysql_cliente_data:
+    driver: local
+

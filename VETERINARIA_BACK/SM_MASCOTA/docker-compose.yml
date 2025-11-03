@@ -1,0 +1,9 @@
+services:
+  mascotas_app:
+    build: . #Ubicacion de dockerfile
+    container_name: mascota_app
+    ports:
+      - "8002:8002" #Puerto PC: Puerto del contenedor
+    volumes:
+      - .:/app
+    restart: always #Reinicia el contenedor si falla

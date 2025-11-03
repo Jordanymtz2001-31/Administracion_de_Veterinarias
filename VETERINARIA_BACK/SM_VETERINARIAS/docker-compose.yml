@@ -1,0 +1,46 @@
+#Primer Contenedor
+
+services:  #Nombre del contenedor
+  veterinarias_db:
+    image: mysql:8.0
+    container_name: veterinarias_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: veterinarias_db
+      MYSQL_USER: Dany
+      MYSQL_PASSWORD: 12345678j
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_veterinaria_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-Dany", "-p12345678j"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+#Segundo Contenedor
+  veterinarias_app: #Nombre del contenedor
+    build: .
+    container_name: veterinarias_app #Nombre del contenedor
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      veterinarias_db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=veterinarias_db
+      - DB_PORT=3306
+      - DB_NAME=veterinarias_db
+      - DB_USER=Dany
+      - DB_PASSWORD=12345678j
+      - DJANGO_SETTINGS_MODULE=VETERINARIAS.settings
+
+volumes:
+  mysql_veterinaria_data:
+    driver: local
+
