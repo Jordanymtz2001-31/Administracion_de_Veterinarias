@@ -1,0 +1,46 @@
+<div id="clientes-section" class="clientes-main">
+    <div class="clientes-container">
+        <div class="clientes-header">
+            <h1>RESPONSABLES DE LAS VETERINARIAS</h1>
+        </div>
+        @if(loading){
+            <p class="loading">Cargando Responsables...</p>
+        }@else{
+            @if(responsables.length === 0){
+                <p class="no-clientes">No hay responsables registrados.</p>
+            }@else{
+                <table class="clientes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Contacto</th>
+                            <th>Veterinaria</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(responsable of responsables; track responsable.id_responsable){
+                            <tr class="text-center">
+                                <td>{{responsable.id_responsable}}</td>
+                                <td>{{responsable.nombre}}</td>
+                                <td>{{responsable.contacto}}</td>
+                                <td>{{responsable.id_veterinaria || 'sin veterinaria'}}</td>
+                                <td>
+                                    <button class="btn delete" (click)="eliminarResponsable(responsable.id_responsable)" ><i class="bi bi-trasnh3"></i>Eliminar</button>
+                                    <button class="btn edit" (click)="editarResponsable(responsable.id_responsable)"><i class="bi bi-pencil-square"></i>Editar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        <div class="volver-container">
+            <button class="btn-volver" (click)="volverInicio()"><i class="bi bi-arrow-up"></i></button>
+        </div>
+    </div>
+</div>
+
+
+

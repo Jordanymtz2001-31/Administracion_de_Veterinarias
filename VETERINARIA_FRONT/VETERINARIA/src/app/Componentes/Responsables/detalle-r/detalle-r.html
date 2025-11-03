@@ -1,0 +1,159 @@
+<main id="detalle-tienda-section" class="detalle-tienda-main">
+    <div class="detalle-tienda-container">
+        <div class="detalle-header">
+            <h2>BÚSQUEDA DETALLADA DE RESPONSABLES</h2>
+        </div>
+
+        <!-- BUSCADOR -->
+        @if (mostrarBuscador) {
+            <div class="buscador-container">
+                @if (loading) {
+                    <div class="loading-indicator">
+                        <p>Cargando Responsables...</p>
+                    </div>
+                }@else {
+                    <div class="buscador-card">
+                        <h3>🔍 Buscar Responsable</h3>
+                        <p>Escribe el nombre de responsable que deseas consultar:</p>
+                        
+                        <div class="input-group">
+                            <div class="search-container">
+                                <input 
+                                    type="text" 
+                                    [(ngModel)]="nombreBusqueda" 
+                                    placeholder="Coloca el nombre."
+                                    class="search-input"
+                                    (input)="filtrarResponsable()"
+                                    (keyup.enter)="buscarPorNombre()">
+                                
+                                <!-- Sugerencias -->
+                                @if (mostrarSugerencias) {
+                                    <div class="sugerencias-dropdown">
+                                        <div 
+                                            *ngFor="let responsable of responsablesFiltrados"
+                                            class="sugerencia-item"
+                                            (click)="seleccionarResponsable(responsable)">
+                                            <div class="sugerencia-nombre">{{responsable.nombre}}</div>
+                                            <div class="sugerencia-info">{{responsable.contacto}} - ID Veterinaria: {{responsable.id_veterinaria}}</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button (click)="buscarPorNombre()" class="btn-buscar">
+                                🔍 Buscar
+                            </button>
+                        </div>
+
+                        @if (responsableSeleccionado) {
+                            <div class="responsable-seleccionado">
+                                <h4>✅ Responsable seleccionado:</h4>
+                                <div class="info-seleccionada">
+                                    <strong>{{responsableSeleccionado.nombre}}</strong><br>
+                                    {{responsableSeleccionado.contacto}} | ID Veterinaria: {{responsableSeleccionado.id_veterinaria}}
+                                </div>
+                            </div>
+                        }
+
+                        @if (error) {
+                            <div class="error-message">
+                                <p>{{error}}</p>
+                            </div>
+                        }
+
+                        <div class="ayuda-text">
+                            <p><strong>💡 Consejo:</strong> Escribe el nombre y selecciona de las sugerencias que aparecen</p>
+                        </div>
+                    </div>
+
+                    <div class="acciones-container">
+                        <button class="btn-inicio" (click)="volerInicio()">
+                            ← Volver al Menú Principal
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- DETALLES -->
+        @if (!mostrarBuscador) {
+            @if (loading) {
+                <div class="loading-indicator">
+                    <p>Cargando detalles de la responsable...</p>
+                </div>
+            }@else if (error) {
+                <div class="error-message">
+                    <p class="error-message"> {{error}} </p>
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        <i class="bi bi-arrow-left"></i>Volver al Buscador
+                    </button>
+                </div>
+            }@else {
+            <div class="tienda-info-card">
+                <div class="tienda-header">
+                    <h3> {{detalleResponsable.responsable.nombre}} </h3>
+                    <span class="tienda_id">ID: {{detalleResponsable.responsable.id_responsable}}</span>
+                </div>
+                <div class="tienda_details">
+                    <div class="detail-item">
+                        <i class="bi bi-person"></i>
+                        <span><strong>Nombre:</strong> {{detalleResponsable.responsable.nombre}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-telephone"></i>
+                        <span><strong>Contacto:</strong> {{detalleResponsable.responsable.contacto}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-building"></i>
+                        <span><strong>ID Veterinaria:</strong> {{detalleResponsable.responsable.id_veterinaria}}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Seccion de mascotas que cuida este responsable -->
+            <div class="seccion-card">
+                <div class="section-header">
+                    <i class="bi bi-heart"></i>
+                    <h3>Mascotas a cargo de este Responsable</h3>
+                    <span class="badge">{{esArray(detalleResponsable.mascotas) ? detalleResponsable.mascotas.length : 0}}</span>
+                </div>
+                @if (!esArray(detalleResponsable.mascotas)) {
+                    <p class="no-data-message">{{detalleResponsable.mascotas}} </p>
+                }@else if (detalleResponsable.mascotas.length === 0) {
+                    <p class="no-data-message"> No hay mascotas a cargo de este responsable</p>
+                }@else{
+                    <div class="items-grid">
+                        @for (mascota of detalleResponsable.mascotas; track mascota.id_mascota) 
+                        {
+                            <div class="item-card">
+                                <div class="item-header">
+                                    <h4> {{mascota.nombre}} </h4>
+                                    <span class="edad">ID: {{mascota.id_mascota}}</span>
+                                </div>
+                                <div class="item-details">
+                                    <p><strong>Raza:</strong> {{mascota.raza}}</p>
+                                    <p><strong>Edad:</strong> {{mascota.edad}} años</p>
+                                    <p><strong>Razón de cita:</strong> {{mascota.razon_cita}}</p>
+                                    <p><strong>ID de Cliente (dueño):</strong> {{mascota.id_cliente}}</p>
+                                    <p><strong>ID de Veterinaria:</strong> {{mascota.id_veterinaria}}</p>                                   
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+                <div class="acciones-container">
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        🔍 Nueva Búsqueda
+                    </button>
+                    <button class="btn volver" (click)="volverAlistar()">
+                        <i class="bi bi-arrow-left"></i>Volver a Lista
+                    </button>
+                    <button class="btn-inicio" (click)="volerInicio()">
+                        <i class="bi bi-house"></i>Ir al inicio
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</main>
+
+

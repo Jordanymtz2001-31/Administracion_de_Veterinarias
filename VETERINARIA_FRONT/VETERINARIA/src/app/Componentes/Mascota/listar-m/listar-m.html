@@ -1,0 +1,53 @@
+<div id="clientes-section" class="clientes-main">
+    <div class="clientes-container">
+        <div class="clientes-header">
+            <h1>MASCOTAS</h1>
+        </div>
+        @if(loading){
+            <p class="loading">Cargando Mascotas...</p>
+        }@else{
+            @if(mascotas.length === 0){
+                <p class="no-clientes">No hay mascotas registrados.</p>
+            }@else{
+                <table class="clientes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Raza</th>
+                            <th>Edad</th>
+                            <th>Razon por la cita</th>
+                            <th>Dueño</th>
+                            <th>Responsable</th>
+                            <th>Veterinaria</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(mascota of mascotas; track mascota.id_mascota){
+                            <tr class="text-center">
+                                <td>{{mascota.id_mascota}}</td>
+                                <td>{{mascota.nombre}}</td>
+                                <td>{{mascota.raza}}</td>
+                                <td>{{mascota.edad}}</td>
+                                <td>{{mascota.razon_cita}}</td>
+                                <td>{{mascota.id_cliente}}</td>
+                                <td>{{mascota.id_responsable || 'sin responsable'}}</td>
+                                <td>{{mascota.id_veterinaria || 'sin veterinaria'}} </td>
+                                <td>
+                                    <button class="btn delete" (click)="eliminarMascota(mascota.id_mascota)" ><i class="bi bi-trasnh3"></i>Eliminar</button>
+                                    <button class="btn edit" (click)="editarMascota(mascota.id_mascota)"><i class="bi bi-pencil-square"></i>Editar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        <div class="volver-container">
+            <button class="btn-volver" (click)="volverInicio()"><i class="bi bi-arrow-up"></i></button>
+        </div>
+    </div>
+</div>
+
+

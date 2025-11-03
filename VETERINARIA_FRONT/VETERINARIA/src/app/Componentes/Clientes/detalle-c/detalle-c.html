@@ -1,0 +1,163 @@
+<main id="detalle-tienda-section" class="detalle-tienda-main">
+    <div class="detalle-tienda-container">
+        <div class="detalle-header">
+            <h2>BÚSQUEDA DETALLADA DE CLIENTE</h2>
+        </div>
+        <!-- BUSCADOR -->
+        @if (mostrarBuscador) {
+            <div class="buscador-container">
+                @if (loading) {
+                    <div class="loading-indicator">
+                        <p>Cargando Clientes...</p>
+                    </div>
+                }@else {
+                    <div class="buscador-card">
+                        <h3>🔍 Buscar Clientes</h3>
+                        <p>Escribe el nombre de cliente que deseas consultar:</p>
+                        
+                        <div class="input-group">
+                            <div class="search-container">
+                                <input 
+                                    type="text" 
+                                    [(ngModel)]="nombreBusqueda" 
+                                    placeholder="Coloca el nombre."
+                                    class="search-input"
+                                    (input)="filtrarClientes()"
+                                    (keyup.enter)="buscarPorNombre()">
+                                
+                                <!-- Sugerencias -->
+                                @if (mostrarSugerencias) {
+                                    <div class="sugerencias-dropdown">
+                                        <div 
+                                            *ngFor="let cliente of clientesFiltrados"
+                                            class="sugerencia-item"
+                                            (click)="seleccionarCliente(cliente)">
+                                            <div class="sugerencia-nombre">{{cliente.nombre}}</div>
+                                            <div class="sugerencia-info">{{cliente.direccion}} - ID Cliente: {{cliente.id_cliente}}</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <button (click)="buscarPorNombre()" class="btn-buscar">
+                                🔍 Buscar
+                            </button>
+                        </div>
+
+                        @if (clientesSeleccionado) {
+                            <div class="responsable-seleccionado">
+                                <h4>✅ Cliente seleccionado:</h4>
+                                <div class="info-seleccionada">
+                                    <strong>{{clientesSeleccionado.nombre}}</strong><br>
+                                    {{clientesSeleccionado.direccion}} | ID Cliente: {{clientesSeleccionado.id_cliente}}
+                                </div>
+                            </div>
+                        }
+
+                        @if (error) {
+                            <div class="error-message">
+                                <p>{{error}}</p>
+                            </div>
+                        }
+
+                        <div class="ayuda-text">
+                            <p><strong>💡 Consejo:</strong> Escribe el nombre y selecciona de las sugerencias que aparecen</p>
+                        </div>
+                    </div>
+
+                    <div class="acciones-container">
+                        <button class="btn-inicio" (click)="volerInicio()">
+                            ← Volver al Menú Principal
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- DETALLES -->
+        @if (!mostrarBuscador) {
+            @if (loading) {
+                <div class="loading-indicator">
+                    <p>Cargando detalles de la cliente...</p>
+                </div>
+            }@else if (error) {
+                <div class="error-message">
+                    <p class="error-message"> {{error}} </p>
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        <i class="bi bi-arrow-left"></i>Volver al Buscador
+                    </button>
+                </div>
+            }@else {
+            <div class="tienda-info-card">
+                <div class="tienda-header">
+                    <h3> {{detalleCliente.cliente.nombre}} </h3>
+                    <span class="tienda_id">ID: {{detalleCliente.cliente.id_cliente}}</span>
+                </div>
+                <div class="tienda_details">
+                    <div class="detail-item">
+                        <i class="bi bi-person"></i>
+                        <span><strong>Nombre:</strong> {{detalleCliente.cliente.nombre}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-direction"></i>
+                        <span><strong>Direccion:</strong> {{detalleCliente.cliente.direccion}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-telephone"></i>
+                        <span><strong>Contacto:</strong> {{detalleCliente.cliente.contacto}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-building"></i>
+                        <span><strong>ID Cliente:</strong> {{detalleCliente.cliente.id_cliente}}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Seccion de mascotas del dueño -->
+            <div class="seccion-card">
+                <div class="section-header">
+                    <i class="bi bi-heart"></i>
+                    <h3>Mascotas del Dueño/Cliente</h3>
+                    <span class="badge">{{obtenerCantidadMascotas()}}</span>
+                </div>
+                @if (!esArray(detalleCliente.mascotas)) {
+                    <p class="no-data-message">{{detalleCliente.mascotas}}</p>
+                }@else if (detalleCliente.mascotas.length === 0) {
+                    <p class="no-data-message">No hay mascotas registradas para este cliente</p>
+                }@else{
+                    <div class="items-grid">
+                        @for (mascota of detalleCliente.mascotas; track mascota.id_mascota) 
+                        {
+                            <div class="item-card">
+                                <div class="item-header">
+                                    <h4> {{mascota.nombre}} </h4>
+                                    <span class="edad">ID: {{mascota.id_mascota}}</span>
+                                </div>
+                                <div class="item-details">
+                                    <p><strong>Raza:</strong> {{mascota.raza}}</p>
+                                    <p><strong>Edad:</strong> {{mascota.edad}} años</p>
+                                    <p><strong>Razón de cita:</strong> {{mascota.razon_cita}}</p>
+                                    <p><strong>ID de Cliente (dueño):</strong> {{mascota.id_cliente}}</p>
+                                    <p><strong>ID de Veterinaria:</strong> {{mascota.id_veterinaria}}</p>                                   
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+                <div class="acciones-container">
+                    <button class="btn volver" (click)="volverAlBuscador()">
+                        🔍 Nueva Búsqueda
+                    </button>
+                    <button class="btn volver" (click)="volverAlistar()">
+                        <i class="bi bi-arrow-left"></i>Volver a Lista
+                    </button>
+                    <button class="btn-inicio" (click)="volerInicio()">
+                        <i class="bi bi-house"></i>Ir al inicio
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</main>
+
+
+

@@ -1,0 +1,41 @@
+<main class="main">
+  <div class="overlay" id="menu-section">
+    <div class="menu-header">
+      <h1 class="title">Micrositio Veterinaria</h1>
+      <p class="subtitle">Administra clientes, mascotas, responsables y veterinarias desde aquí</p>
+    </div>
+
+    <nav class="menu" role="navigation" aria-label="Menú principal de la aplicación">
+      <div class="menu-group" aria-hidden="false">
+        <h3 class="group-title">Explorar</h3>
+        <div class="menu-grid">
+          <button class="menu-item" (click)="listarClientes()" aria-label="Listar clientes">👥 Clientes</button>
+          <button class="menu-item" (click)="listarMascotas()" aria-label="Listar mascotas">🐶 Mascotas</button>
+          <button class="menu-item" (click)="listarResponsables()" aria-label="Listar responsables">🧑‍⚕️ Responsables</button>
+          <button class="menu-item" (click)="listarVeterinarias()" aria-label="Listar veterinarias">🏥 Veterinarias</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <h3 class="group-title">Nuevos registros</h3>
+        <div class="menu-grid">
+          <button class="menu-item secondary" (click)="nuevoCliente()">➕ Nuevo cliente</button>
+          <button class="menu-item secondary" (click)="nuevoMascota()">➕ Nueva mascota</button>
+          <button class="menu-item secondary" (click)="nuevoResponsable()">➕ Nuevo responsable</button>
+          <button class="menu-item secondary" (click)="nuevoVeterinaria()">➕ Nueva veterinaria</button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <h3 class="group-title">Búsquedas avanzadas</h3>
+        <div class="menu-grid">
+          <button class="menu-item tertiary" (click)="detalleCliente()">🔎 Buscar cliente</button>
+          <button class="menu-item tertiary" (click)="detalleResponsable()">🔎 Buscar responsable</button>
+          <button class="menu-item tertiary" (click)="detalleVeterinaria()">🔎 Buscar veterinaria</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</main>
+
+<router-outlet></router-outlet>
